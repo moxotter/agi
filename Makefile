@@ -1,8 +1,8 @@
 CC=gcc
-CFLAGS=-I/usr/lib/modules/$(uname -r)/build/include/linux
+CFLAGS=
 LDFLAGS=-lm
 
-build:
+build: ann.h
 	$(CC) $(CFLAGS) $(LDFLAGS) ann.c -o ann.out
 
 clean:
