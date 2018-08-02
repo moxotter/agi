@@ -1,12 +1,15 @@
-/*
-Basic artifical neural network to perform XOR function
-2 inputs, 1 output, 3 layers of 3 nodes
+/* Artificial Neural Network
+Input layer: 2 nodes
+Hidden layers: 1 layer with 3 nodes
+Output layer: 1 node
+
+Target: Classify inputs as exclusive or
 */
 
+#include <linux/random.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 
 /* Activation Function
 Name:   Soft step (sigmoid)
@@ -100,23 +103,5 @@ void init_layer(struct t_layer *p_layer, int n_in, int n_out)
 
 int main(int argc, char **argv)
 {
-  int n_in = 2;
-  int n_out = 3;
-
-  struct t_layer layer;
-  init_layer(&layer, n_in, n_out);
-
-  double array[n_in][n_out];
-  double *p_array = &array[0][0];
-  srand(time(NULL));
-  init_rand_norm(p_array, n_in * n_out);
-
-  for (int row = 0; row < n_in; row++) {
-    for (int col = 0; col < n_out; col++) {
-      printf("%.3f\t", array[row][col]);
-    }
-    printf("\n");
-  }
-
   return 0;
 }
