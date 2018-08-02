@@ -46,6 +46,7 @@ double rand_norm()
   return z0;
 }
 
+// initializes array using random numbers with standard normal distribution
 double init_rand_norm(double *array, uint64_t size)
 {
   // generate seed from linux entropy
