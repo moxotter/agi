@@ -13,35 +13,28 @@ Target: Classify inputs as exclusive or
 #include "ann.h"
 #include "mt19937-64.h"
 
-/* Activation Function
-Name:   Soft step (sigmoid)
-Type:   Classifier
-Range:  (-1, 1)
-*/
+/* classifier activation function with (0, 1) interval
+Sigmoid/logisitic
+derivative of softplus */
 double softstep(double x)
 {
   return 1.0 / (1 + exp(-x));
 }
 
-/* Activation Function
-Name:   Soft plus
-Type:   Regressor
-Range:  (0, inf)
-*/
+/* regressor activation function with [0, inf) interval
+antiderivative of softstep */
 double softplus(double x)
 {
   return log(1 + exp(x));
 }
 
-/*
-Generates random values from the standard normal distribution using Box-Muller
-transform
-*/
+/* generate random numbers with standard normal distribution
+Box-Muller transform */
 double rand_norm()
 {
   double u1, u2, z0, z1;
 
-  // generate random numbers on [0, 1] interval
+  // Mersenne Twister with [0, 1] interval
   u1 = genrand64_real1();
   u2 = genrand64_real1();
 
@@ -53,11 +46,11 @@ double rand_norm()
 
 int main(int argc, char **argv)
 {
-  // Linux system call getrandom to generate seed
+  // generate seed from linux entropy
   unsigned long long seed;
   getrandom(&seed, sizeof(seed), 0);
 
-  // initialize mersenne twister with seed
+  // initialize Mersenne Twister
   init_genrand64(seed);
 
   for (int i = 0; i < 10; i++) {
