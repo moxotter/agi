@@ -6,6 +6,7 @@ Basic artifical neural network to perform XOR function
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 /* Activation Function
 Name:   Soft step (sigmoid)
@@ -107,6 +108,7 @@ int main(int argc, char **argv)
 
   double array[n_in][n_out];
   double *p_array = &array[0][0];
+  srand(time(NULL));
   init_rand_norm(p_array, n_in * n_out);
 
   for (int row = 0; row < n_in; row++) {
