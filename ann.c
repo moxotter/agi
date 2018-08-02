@@ -1,11 +1,12 @@
 /*
 Basic artifical neural network to perform XOR function
-2 inputs, 1 output, 3 layers
+2 inputs, 1 output, 3 layers of 3 nodes
 */
 
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 /* Activation Function
 Name:   Soft step (sigmoid)
@@ -28,8 +29,8 @@ double softplus(double x)
 }
 
 /*
-Box-Muller transform
-Generates random values from the standard normal distribution
+Generates random values from the standard normal distribution using Mox-Muller
+transform
 */
 double rand_norm()
 {
@@ -44,20 +45,31 @@ double rand_norm()
   return z0;
 }
 
-int main(int argc, char** argv)
+/*
+Initializes an array with random values from the standard normal distribution
+*/
+void init_rand_norm(double **array, int row, int col)
 {
-  // activation function test
-  for (int x = -6; x <= 6; x++)
+  for (int r = 0; r < row; r++)
   {
-    printf("softstep(%i) = %f\tsoftplus(%i) = %f\n", x, softstep(x), x, softplus(x));
+    for (int c = 0; c < col; r++)
+    {
+      array[r][c] = rand_norm();
+    }
   }
+}
 
-  // random normal function test
+int main(int argc, char **argv)
+{
+  double array[3][3];
+  double *p_array[3] = array;
+  init_rand_norm(p_array, 3, 3);
+
   for (int row = 0; row < 3; row++)
   {
     for (int col = 0; col < 3; col++)
     {
-      printf("%3f\t", rand_norm());
+      printf("%.3f\t", array[row][col]);
     }
     printf("\n");
   }
