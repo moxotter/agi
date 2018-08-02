@@ -62,8 +62,12 @@ void init_rand_norm(double **array, int row, int col)
 int main(int argc, char **argv)
 {
   double array[3][3];
-  double *p_array[3] = array;
-  init_rand_norm(p_array, 3, 3);
+  double *p_array[3];
+
+  for (int i = 0; i < 3; i++){
+    *p_array = array[i];
+    init_rand_norm(p_array, 3, 3);
+  }
 
   for (int row = 0; row < 3; row++)
   {
