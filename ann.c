@@ -9,9 +9,9 @@ Target: Classify inputs as exclusive or
 #include <sys/random.h>
 #include <math.h>
 #include <stdio.h>
-#include <stdlib.h>
 
 #include "ann.h"
+#include "mt19937-64.h"
 
 /* Activation Function
 Name:   Soft step (sigmoid)
@@ -41,9 +41,9 @@ double rand_norm()
 {
   double u1, u2, z0, z1;
 
-  // replace rand with getrandom to generate uniform distribution between 0 and 1
-  u1 = rand() / (double)RAND_MAX;
-  u2 = rand() / (double)RAND_MAX;
+  // generate random numbers on [0, 1] interval
+  u1 = genrand64_real1();
+  u2 = genrand64_real1();
 
   z0 = sqrt(-2.0 * log(u1)) * cos(2 * M_PI * u2);
   z1 = sqrt(-2.0 * log(u1)) * sin(2 * M_PI * u2);
@@ -53,5 +53,16 @@ double rand_norm()
 
 int main(int argc, char **argv)
 {
+  // Linux system call getrandom to generate seed
+  unsigned long long seed;
+  getrandom(&seed, sizeof(seed), 0);
+
+  // initialize mersenne twister with seed
+  init_genrand64(seed);
+
+  for (int i = 0; i < 10; i++) {
+    printf("%f\n", rand_norm());
+  }
+
   return 0;
 }
