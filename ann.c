@@ -48,26 +48,19 @@ double rand_norm()
 /*
 Initializes an array with random values from the standard normal distribution
 */
-void init_rand_norm(double **array, int row, int col)
+void init_rand_norm(double *p_array, int size)
 {
-  for (int r = 0; r < row; r++)
-  {
-    for (int c = 0; c < col; r++)
-    {
-      array[r][c] = rand_norm();
-    }
+  for (int i = 0; i < size; i++) {
+    p_array[i] = rand_norm();
   }
 }
 
 int main(int argc, char **argv)
 {
   double array[3][3];
-  double *p_array[3];
+  double *p_array = &array[0][0];
 
-  for (int i = 0; i < 3; i++){
-    *p_array = array[i];
-    init_rand_norm(p_array, 3, 3);
-  }
+  init_rand_norm(p_array, 9);
 
   for (int row = 0; row < 3; row++)
   {
