@@ -8,6 +8,8 @@ Target: Classify inputs as exclusive or
 
 #include <sys/random.h>
 #include <math.h>
+
+#include <stdint.h>
 #include <stdio.h>
 
 #include "ann.h"
@@ -44,7 +46,7 @@ double rand_norm()
   return z0;
 }
 
-int main(int argc, char **argv)
+double init_rand_norm(double *array, uint64_t size)
 {
   // generate seed from linux entropy
   unsigned long long seed;
@@ -53,8 +55,20 @@ int main(int argc, char **argv)
   // initialize Mersenne Twister
   init_genrand64(seed);
 
-  for (int i = 0; i < 10; i++) {
-    printf("%f\n", rand_norm());
+  for (uint64_t i = 0; i <= size; i++)
+    array[i] = rand_norm();
+}
+
+int main(int argc, char **argv)
+{
+  double array[2][3];
+  init_rand_norm(&array[0][0], 6);
+
+  for (int row = 0; row < 2; row++) {
+    for (int col = 0; col < 3; col++)
+      printf("%.3f\t", array[row][col]);
+
+    printf("\n");
   }
 
   return 0;
