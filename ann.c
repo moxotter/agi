@@ -51,6 +51,15 @@ ann_layer *ann_layer_alloc(size_t size_in, size_t size_out, const gsl_rng *r)
   return layer;
 }
 
+/* frees allocated artificial neural network layer
+*/
+void ann_layer_free(ann_layer *layer)
+{
+  gsl_matrix_free(layer->weights);
+  gsl_vector_free(layer->biases);
+  free(layer);
+}
+
 int main(int argc, char **argv)
 {
   // generate seed
@@ -69,6 +78,8 @@ int main(int argc, char **argv)
 
     printf("\n");
   }
+
+  ann_layer_free(layer);
 
   return 0;
 }
