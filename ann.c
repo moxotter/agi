@@ -81,7 +81,7 @@ void ann_layer_forward(const ann_layer *l, const gsl_vector *i, gsl_vector *o, c
   gsl_vector_memcpy(o, l->biases);
 
   // product of inputs and weights and sum of biases
-  gsl_blas_dgemv(CblasNoTrans, 0.0, l->weights, i, 0.0, o);
+  gsl_blas_dgemv(CblasTrans, 0.0, l->weights, i, 0.0, o);
 
   // apply activation function
   (*a)(o);
@@ -132,7 +132,6 @@ int main(int argc, char *argv[])
     printf("%f\t", outputs->data[n]);
   printf("\n");
 
-  gsl_vector_free(inputs);
   gsl_vector_free(outputs);
   ann_layer_free(layer);
 
