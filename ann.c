@@ -6,71 +6,28 @@ Output layer: 1 node
 Target: Classify inputs as exclusive or
 */
 
-#include <sys/random.h>
-#include <math.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_matrix.h>
+#include <gsl/gsl_randist.h>
+#include <gsl/gsl_rng.h>
 
-#include <stdint.h>
 #include <stdio.h>
 
-#include "ann.h"
-#include "mt19937-64.h"
-
-/* classifier activation function with (0, 1) interval
-Sigmoid/logisitic
-derivative of softplus */
-double softstep(double x)
-{
-  return 1.0 / (1 + exp(-x));
-}
-
-/* regressor activation function with [0, inf) interval
-antiderivative of softstep */
-double softplus(double x)
-{
-  return log(1 + exp(x));
-}
-
-/* generate random numbers with standard normal distribution
-Box-Muller transform */
-double rand_norm()
-{
-  double u1, u2, z0, z1;
-
-  // Mersenne Twister with [0, 1] interval
-  u1 = genrand64_real1();
-  u2 = genrand64_real1();
-
-  z0 = sqrt(-2.0 * log(u1)) * cos(2 * M_PI * u2);
-  z1 = sqrt(-2.0 * log(u1)) * sin(2 * M_PI * u2);
-
-  return z0;
-}
-
-// initializes array using random numbers with standard normal distribution
-double init_rand_norm(double *array, uint64_t size)
-{
-  // generate seed from linux entropy
-  unsigned long long seed;
-  getrandom(&seed, sizeof(seed), 0);
-
-  // initialize Mersenne Twister
-  init_genrand64(seed);
-
-  for (uint64_t i = 0; i <= size; i++)
-    array[i] = rand_norm();
-}
+#include <sys/random.h>
 
 int main(int argc, char **argv)
 {
-  double array[2][3];
-  init_rand_norm(&array[0][0], 6);
+  // generate seed
+  unsigned long int s;
+  getrandom(&s, sizeof(s), 0);
 
-  for (int row = 0; row < 2; row++) {
-    for (int col = 0; col < 3; col++)
-      printf("%.3f\t", array[row][col]);
+  // allocate and initialize Mersenne Twister random number generator
+  gsl_rng *r = gsl_rng_alloc(gsl_rng_mt19937);
+  gsl_rng_set(r, s);
 
-    printf("\n");
-  }
+  // generate random numbers with standard normal distribution
+  for (int i = 0; i < 10; i++)
+    printf("%f\n", gsl_ran_gaussian(r, 1));
 
   return 0;
 }

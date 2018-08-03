@@ -1,17 +1,14 @@
 CC = gcc
-CFLAGS =
-LDFLAGS = -lm
+CFLAGS = -Wall
+LDFLAGS = -lgsl -lcblas
 
-objects = ann.o mt19937-64.o
+objects = ann.o
 
 build : $(objects)
-	$(CC) -o ann.out $(CFLAGS) $(LDFLAGS) $(objects)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o ann.out $(objects)
 
-ann.o : ann.h mt19937-64.h
+ann.o :
 	$(CC) -c ann.c
-
-mt19937-64.o :
-	$(CC) -c mt19937-64.c
 
 clean:
 	rm ann.out $(objects)
