@@ -12,9 +12,19 @@ Target: Classify inputs as exclusive or
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_vector.h>
 
+#include <math.h>
 #include <stdio.h>
 
 #include <sys/random.h>
+
+/* softstep activation function
+v : apply to vector
+*/
+void softstep(gsl_vector *v)
+{
+  for (size_t n = 0; n < v->size; n++)
+    v->data[n] = 1.0 / (1.0 + exp(v->data[n]));
+}
 
 // artificial neural network layer
 typedef struct {
@@ -51,8 +61,7 @@ ann_layer *ann_layer_alloc(size_t size_in, size_t size_out, const gsl_rng *r)
   return layer;
 }
 
-/* frees allocated artificial neural network layer
-*/
+// free allocated artificial neural network layer
 void ann_layer_free(ann_layer *layer)
 {
   gsl_matrix_free(layer->weights);
@@ -72,12 +81,21 @@ int main(int argc, char **argv)
 
   ann_layer *layer = ann_layer_alloc(2, 3, r);
 
+  printf("Weights:\n");
+
   for (size_t row = 0; row < 2; row++) {
     for (size_t col = 0; col < 3; col++)
       printf("%f\t", gsl_matrix_get(layer->weights, row, col));
 
     printf("\n");
   }
+
+  printf("Biases:\n");
+
+  for (size_t n = 0; n < 3; n++)
+    printf("%f\t", gsl_vector_get(layer->biases, n));
+
+  printf("\n");
 
   ann_layer_free(layer);
 
