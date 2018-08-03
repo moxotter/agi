@@ -81,7 +81,7 @@ void ann_layer_forward(const ann_layer *l, const gsl_vector *i, gsl_vector *o, c
   gsl_vector_memcpy(o, l->biases);
 
   // product of inputs and weights and sum of biases
-  gsl_blas_dgemv(CblasTrans, 0.0, l->weights, i, 0.0, o);
+  gsl_blas_dgemv(CblasTrans, 1.0, l->weights, i, 1.0, o);
 
   // apply activation function
   (*a)(o);
