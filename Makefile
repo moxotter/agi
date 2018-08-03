@@ -1,14 +1,21 @@
+INCL =
+SRC = ann.c
+OBJ = $(SRC:.c=.o)
+LIBS = -lgsl -lcblas
+EXE = ann.out
+
 CC = gcc
 CFLAGS = -Wall -Og -g
-LDFLAGS = -lgsl -lcblas
+LIBPATH = -L.
+LDFLAGS = -o $(EXE) $(LIBPATH) $(LIBS)
 
-objects = ann.o
+%.o: %.c
+	$(CC) -c $(CFLAGS) $*.c
 
-build : $(objects)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o ann.out $(objects)
+$(EXE): $(OBJ)
+	$(CC) $(LDFLAGS) $(OBJ)
 
-ann.o :
-	$(CC) $(CFLAGS) -c ann.c
+$(OBJ): $(INCL)
 
 clean:
-	rm ann.out $(objects)
+	rm $(OBJ) $(EXE)
