@@ -1,7 +1,7 @@
 INCL =
 SRC = ann.c
 OBJ = $(SRC:.c=.o)
-LIBS = -lgsl -lcblas
+LIBS = -lm -lgsl -lcblas
 EXE = ann.out
 
 CC = gcc

@@ -6,7 +6,7 @@ Output layer: 1 node
 Target: Classify inputs as exclusive or
 */
 
-#include <gsl/gsl_cblas.h>
+#include <gsl/gsl_blas.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_rng.h>
@@ -69,7 +69,25 @@ void ann_layer_free(ann_layer *layer)
   free(layer);
 }
 
-int main(int argc, char **argv)
+/* forwards inputs to an artificial neural network layer
+l : forward to layer
+i : input to forward
+o : output of layer
+a : activation function
+*/
+void ann_layer_forward(const ann_layer *l, const gsl_vector *i, gsl_vector *o, const void (*a)(gsl_vector *))
+{
+  // copy biases to outputs for dgemv
+  gsl_vector_memcpy(o, l->biases);
+
+  // product of inputs and weights and sum of biases
+  gsl_blas_dgemv(CblasNoTrans, 0.0, l->weights, i, 0.0, o);
+
+  // apply activation function
+  (*a)(o);
+}
+
+int main(int argc, char *argv[])
 {
   // generate seed
   unsigned long int s;
@@ -97,6 +115,25 @@ int main(int argc, char **argv)
 
   printf("\n");
 
+  double arr[2] = {0, 1};
+  gsl_vector_view arr_view = gsl_vector_view_array(arr, 2);
+  gsl_vector *inputs = &arr_view.vector;
+
+  printf("Inputs:\n");
+  for (size_t n = 0; n < inputs->size; n++)
+    printf("%f\t", inputs->data[n]);
+  printf("\n");
+
+  gsl_vector *outputs = gsl_vector_alloc(3);
+  ann_layer_forward(layer, inputs, outputs, &softstep);
+
+  printf("Outputs:\n");
+  for (size_t n = 0; n < outputs->size; n++)
+    printf("%f\t", outputs->data[n]);
+  printf("\n");
+
+  gsl_vector_free(inputs);
+  gsl_vector_free(outputs);
   ann_layer_free(layer);
 
   return 0;
