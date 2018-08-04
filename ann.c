@@ -285,27 +285,34 @@ void ann_network_forward(const ann_network *network, const gsl_vector *inputs,
   // first layer
   ann_layer *layer = network->layers;
 
-  // allocate computational vectors
-  gsl_vector *layer_inputs = gsl_vector_alloc(layer->num_inputs);
-  gsl_vector *layer_outputs = gsl_vector_alloc(layer->num_outputs);
-
-  // intialize layer inputs
-  gsl_vector_memcpy(layer_inputs, inputs);
+  gsl_vector *layer_inputs;
+  gsl_vector *layer_outputs;
 
   // iterate and forward layers
   while (layer != 0) {
+    if (layer == network->layers) { // first layer
+      // allocate computational vectors
+      layer_inputs = gsl_vector_alloc(layer->num_inputs);
+      layer_outputs = gsl_vector_alloc(layer->num_outputs);
+
+      // intialize layer inputs
+      gsl_vector_memcpy(layer_inputs, inputs);
+    }
+    else {
+      // free and reallocate computational vectors
+      gsl_vector_free(layer_inputs);
+      layer_inputs = layer_outputs;
+      layer_outputs = gsl_vector_alloc(layer->num_outputs);
+    }
+
+    // forward inputs to layer
     ann_layer_forward(layer, layer_inputs, layer_outputs, func);
 
     // next layer
     layer = layer->next_layer;
-
-    // free and reallocate computational vectors
-    gsl_vector_free(layer_inputs);
-    layer_inputs = layer_outputs;
-    layer_outputs = gsl_vector_alloc(layer->num_outputs);
   }
 
-  // copy last layer outputs to network outputs
+  // copy last layers outputs to network outputs
   gsl_vector_memcpy(outputs, layer_outputs);
 
   // free computational vectors
@@ -379,9 +386,9 @@ int main(int argc, char *argv[])
   gsl_vector_free(targets);
 
   // mean training set mean squared errors
-  mse = mse / 4;
+  mse = mse / 4.0;
 
-  printf("MSE: %f", mse);
+  printf("MSE: %f\n", mse);
 
   return 0;
 }
