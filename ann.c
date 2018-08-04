@@ -387,8 +387,9 @@ int main(int argc, char *argv[])
 
   // mean training set mean squared errors
   mse = mse / 4.0;
-
   printf("MSE: %f\n", mse);
+
+  ann_network_free(network);
 
   return 0;
 }
