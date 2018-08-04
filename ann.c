@@ -2,9 +2,11 @@
  * artificial neural network framework
  *
  * todo:
- *  - implement multidimensional minimizer
- *  - implement nonlinear least-squares
- *  - implement stochastic process
+ *  ! restructure networks to allocate contiguous memory for variables
+ *  ! restructure layers to use views
+ *  ~ implement multidimensional minimizer
+ *  ~ implement nonlinear least-squares
+ *  ~ implement stochastic process
  */
 
 // GNU scientific library headers
@@ -78,8 +80,8 @@ double ann_mse(gsl_vector *outputs, gsl_vector *targets)
  * artificial neural network layer
  *
  * layers consist of nodes (neurons) that produce outputs (activations), weights
- * that are assigned to connections of inputs (activations of other neurons) to
- * nodes, and biases (thresholds).
+ * assigned to the connections of inputs (activations of other neurons) to nodes
+ * and biases (thresholds).
  */
 typedef struct {
   size_t num_inputs;
@@ -271,7 +273,7 @@ void ann_network_init(ann_network *network, gsl_rng *rng)
 /*
  * forwards inputs to an artificial neural network layer
  *
- * computes matrix-vector product of inputs and weights and sums biases
+ * computes matrix-vector product of weights and inputs and sums biases
  *
  * arguments:
  *  layer : artificial neural network layer to forward
