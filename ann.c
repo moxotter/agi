@@ -285,20 +285,16 @@ void ann_network_forward(const ann_network *network, const gsl_vector *inputs,
   // first layer
   ann_layer *layer = network->layers;
 
-  gsl_vector *layer_inputs;
-  gsl_vector *layer_outputs;
+  // allocate computational vectors
+  gsl_vector *layer_inputs = gsl_vector_alloc(layer->num_inputs);
+  gsl_vector *layer_outputs = gsl_vector_alloc(layer->num_outputs);
+
+  // intialize layer inputs
+  gsl_vector_memcpy(layer_inputs, inputs);
 
   // iterate and forward layers
   while (layer != 0) {
-    if (layer == network->layers) { // first layer
-      // allocate computational vectors
-      layer_inputs = gsl_vector_alloc(layer->num_inputs);
-      layer_outputs = gsl_vector_alloc(layer->num_outputs);
-
-      // intialize layer inputs
-      gsl_vector_memcpy(layer_inputs, inputs);
-    }
-    else {
+    if (layer != network->layers) { // not first layer
       // free and reallocate computational vectors
       gsl_vector_free(layer_inputs);
       layer_inputs = layer_outputs;
