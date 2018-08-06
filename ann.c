@@ -59,10 +59,12 @@ void ann_fdf(const gsl_vector *x, void *params, double *f, gsl_vector *g)
     inputs = outputs;
   }
 
-  *f = 0.0;
+  double loss = 0.0;
 
   for (size_t n = 0; n < num_outputs; n++)
-    *f += pow(outputs[n] - targets[n], 2.0) / (double)num_outputs;
+    loss += pow(outputs[n] - targets[n], 2.0) / (double)num_outputs;
+
+  *f = loss;
 }
 
 int main(int argc, char *argv[])
